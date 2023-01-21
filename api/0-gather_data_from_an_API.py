@@ -2,33 +2,33 @@
 """task 0 module"""
 
 
-if __name__ == '__main__':
-    """
-        task
-    """
-    import requests
-    import sys
-    employee_id = sys.argv[1]
-    employee_user_id = requests.\
-        get('https://jsonplaceholder.typicode.com/users/{}'.
-            format(employee_id)).json()
-    employee_info = requests.\
-        get('https://jsonplaceholder.typicode.com/todos?userId={}'.
-            format(employee_user_id['id'])).json()
-    # Variables
-    EMPLOYEE_NAME = employee_user_id['name']
-    NUMBER_OF_DONE_TASKS = 0
-    TOTAL_NUMBER_OF_TASKS = 0
-    TASK_TITLE = []
-    for task in employee_info:
-        if employee_user_id['id'] == task['userId']:
-            if task['completed']:
-                NUMBER_OF_DONE_TASKS += 1
-                TASK_TITLE.append(task['title'])
-            TOTAL_NUMBER_OF_TASKS += 1
+import json
+import requests
+import sys
 
+if __name__ == '__main__':
+    """API"""
+
+    user = requests.\
+        get('https://jsonplaceholder.typicode.com/users/{}'.
+            format(sys.argv[1]))
+    user = user.json()
+    todos = requests.\
+        get('https://jsonplaceholder.typicode.com/todos?userId={}'.
+            format(sys.argv[1]))
+    todos = todos.json()
+    # print(todos.json())
+    name = user['name']
+    total_tasks = len(todos)
+    tasks_done = 0
+    lists_of_titles = []
+    for f in todos:
+        if user['id'] == f['userId']:
+            if f['completed']:
+                tasks_done += 1
+                lists_of_titles.append(f['title'])
+        # print(f"****{f}****")
     print("Employee {} is done with tasks({}/{}):".
-          format(EMPLOYEE_NAME, NUMBER_OF_DONE_TASKS,
-                TOTAL_NUMBER_OF_TASKS))
-    for line in TASK_TITLE:
-        print("\t {}".format(line))
+          format(name, tasks_done, total_tasks))
+    for title in lists_of_titles:
+        print("\t {}".format(title))
